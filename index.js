@@ -2,8 +2,8 @@ import http from "http";
 import fs from "fs";
 
 // Log function to track requests
-const logRequest = (url) => {
-  const logMessage = `${new Date().toISOString()} - Request URL: ${url}\n`;
+const logRequest = (method, url) => {
+  const logMessage = `${new Date().toISOString()} - Method: ${method}, URL: ${url}\n`;
   fs.appendFile("log.txt", logMessage, (err) => {
     if (err) console.error("Error writing to log file:", err);
   });
@@ -11,59 +11,69 @@ const logRequest = (url) => {
 
 // Creating the server
 const server = http.createServer((req, res) => {
-  const { url } = req;
+  const { method, url } = req;
 
   // Log the request
-  logRequest(url);
+  logRequest(method, url);
 
-  // Handle routes
   switch (url) {
     case "/":
-      res.write("Welcome to the BarterX");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Welcome to the BarterX");
       break;
-    case "/products":
-      res.write("Here are the products up for Sale in BarterX");
-      break;
+    case "/api/products":
+      res.writeHead(200, { "Content-Type": "application/json" });
+      const products = [
+        { "id": 1, "name": "Used Laptop", "price": 300 },
+        { "id": 2, "name": "Second-hand Bicycle", "price": 50 }
+    ];
+        res.end(JSON.stringify(products));
+        break;
     case "/login":
-      res.write("Login to the BarterX");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Login to the BarterX");
       break;
     case "/signup":
-      res.write("Sign up to the BarterX");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Sign up to the BarterX");
       break;
     case "/profile":
-      res.write("Trader Profile");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Trader Profile");
       break;
     case "/cart":
-      res.write("Your Shopping Cart is here");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Your Shopping Cart is here");
       break;
     case "/checkout":
-      res.write("Let's start shipping");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Let's start shipping");
       break;
     case "/orders":
-      res.write("Your Orders are here");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Your Orders are here");
       break;
     case "/categories":
-      res.write("Browse Categories");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Browse Categories");
       break;
     case "/chat":
-      res.write("Your Chat with fellow Traders");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Your Chat with fellow Traders");
       break;
     case "/contact":
-      res.write("Contact Us at");
-      break;
-    case "/about":
-      res.write("The modern approach to trading our commodities");
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("Contact Us at");
       break;
     default:
-      res.write("Page not found");
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Page not found", statusCode: 404 }));
       break;
   }
-
-  res.end();
 });
 
 // Start the server
 const PORT = 8050;
 server.listen(PORT, () => {
-    console.log(`Server is runnning on http://localhost:${PORT}`);
- });
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
